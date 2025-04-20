@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -67,6 +68,7 @@ const KYCForm = () => {
         description: "Your KYC information has been submitted for review.",
       });
       
+      // Redirect to home page after successful submission
       navigate('/');
     } catch (error: any) {
       toast({
@@ -80,7 +82,17 @@ const KYCForm = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-dex-dark via-dex-primary/20 to-dex-secondary/20 p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-dex-dark via-dex-primary/20 to-dex-secondary/20 p-4">
+      <div className="mb-4">
+        <Button 
+          variant="outline" 
+          onClick={() => navigate('/')}
+          className="bg-dex-dark/50 text-white hover:bg-dex-dark hover:text-dex-accent border-dex-primary/30"
+        >
+          Back to Home
+        </Button>
+      </div>
+      
       <Card className="w-full max-w-md bg-dex-dark/80 backdrop-blur-lg border border-dex-primary/30 text-white shadow-2xl">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-white">KYC Verification</CardTitle>

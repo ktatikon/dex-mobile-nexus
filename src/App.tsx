@@ -7,7 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import PrivateRoute from "@/components/PrivateRoute";
 import DexNavigation from "@/components/DexNavigation";
-import Index from "./pages/Index";
+import HomePage from "./pages/HomePage";
 import NotFound from "./pages/NotFound";
 import AuthPage from "./pages/AuthPage";
 import KYCForm from "./components/KYCForm";
@@ -39,8 +39,12 @@ const App = () => (
                 path="/"
                 element={
                   <PrivateRoute requireKyc={true}>
-                    <DexNavigation />
-                    <Index />
+                    <div className="pt-16 pb-20">
+                      <DexNavigation />
+                      <div className="container mx-auto px-4">
+                        <HomePage />
+                      </div>
+                    </div>
                   </PrivateRoute>
                 }
               />
@@ -48,8 +52,12 @@ const App = () => (
                 path="/trade"
                 element={
                   <PrivateRoute requireKyc={true}>
-                    <DexNavigation />
-                    <TradePage />
+                    <div className="pt-16 pb-20">
+                      <DexNavigation />
+                      <div className="container mx-auto px-4">
+                        <TradePage />
+                      </div>
+                    </div>
                   </PrivateRoute>
                 }
               />
@@ -57,8 +65,12 @@ const App = () => (
                 path="/explore"
                 element={
                   <PrivateRoute requireKyc={true}>
-                    <DexNavigation />
-                    <ExplorePage />
+                    <div className="pt-16 pb-20">
+                      <DexNavigation />
+                      <div className="container mx-auto px-4">
+                        <ExplorePage />
+                      </div>
+                    </div>
                   </PrivateRoute>
                 }
               />
@@ -66,8 +78,12 @@ const App = () => (
                 path="/profile"
                 element={
                   <PrivateRoute requireKyc={true}>
-                    <DexNavigation />
-                    <ProfilePage />
+                    <div className="pt-16 pb-20">
+                      <DexNavigation />
+                      <div className="container mx-auto px-4">
+                        <ProfilePage />
+                      </div>
+                    </div>
                   </PrivateRoute>
                 }
               />
