@@ -5,7 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 
 const KYCForm = () => {
@@ -77,51 +77,60 @@ const KYCForm = () => {
   };
 
   return (
-    <Card className="p-6 bg-gray-800 text-white border-gray-700">
-      <h2 className="text-xl font-semibold mb-4">KYC Verification</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="dateOfBirth">Date of Birth</Label>
-          <Input
-            id="dateOfBirth"
-            type="date"
-            required
-            value={formData.dateOfBirth}
-            onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
-          />
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-dex-dark via-dex-primary/20 to-dex-secondary/20 p-4">
+      <Card className="w-full max-w-md bg-dex-dark/80 backdrop-blur-lg border border-dex-primary/30 text-white shadow-2xl">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-white">KYC Verification</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="dateOfBirth" className="text-white">Date of Birth</Label>
+              <Input
+                id="dateOfBirth"
+                type="date"
+                required
+                value={formData.dateOfBirth}
+                onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
+                className="bg-dex-dark/70 border-dex-primary/30 text-white placeholder-gray-400 focus:ring-dex-accent"
+              />
+            </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="address">Address</Label>
-          <Input
-            id="address"
-            required
-            placeholder="Enter your full address"
-            value={formData.address}
-            onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-          />
-        </div>
+            <div className="space-y-2">
+              <Label htmlFor="address" className="text-white">Address</Label>
+              <Input
+                id="address"
+                required
+                placeholder="Enter your full address"
+                value={formData.address}
+                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                className="bg-dex-dark/70 border-dex-primary/30 text-white placeholder-gray-400 focus:ring-dex-accent"
+              />
+            </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="governmentId">Government ID</Label>
-          <Input
-            id="governmentId"
-            type="file"
-            required
-            accept="image/*"
-            onChange={handleFileChange}
-          />
-        </div>
+            <div className="space-y-2">
+              <Label htmlFor="governmentId" className="text-white">Government ID</Label>
+              <Input
+                id="governmentId"
+                type="file"
+                required
+                accept="image/*"
+                onChange={handleFileChange}
+                className="bg-dex-dark/70 border-dex-primary/30 text-white file:text-white file:bg-dex-primary/50 file:border-0 file:px-4 file:py-2 file:rounded-md"
+              />
+            </div>
 
-        <Button
-          type="submit"
-          className="w-full bg-dex-primary hover:bg-dex-primary/90"
-          disabled={loading}
-        >
-          {loading ? 'Submitting...' : 'Submit KYC'}
-        </Button>
-      </form>
-    </Card>
+            <Button
+              type="submit"
+              className="w-full bg-dex-accent hover:bg-dex-accent/90 text-white"
+              disabled={loading}
+            >
+              {loading ? 'Submitting...' : 'Submit KYC'}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
