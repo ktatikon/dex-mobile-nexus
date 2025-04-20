@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -24,6 +25,20 @@ export default {
 				ring: 'hsl(var(--ring))',
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
+                
+                // DEX specific colors
+                dex: {
+                    primary: '#8B5CF6',     // Main purple
+                    secondary: '#7E69AB',   // Secondary purple
+                    dark: '#1A1F2C',        // Dark background
+                    light: '#D6BCFA',       // Light purple
+                    accent: '#0EA5E9',      // Accent blue
+                    success: '#10B981',     // Green for positive values
+                    error: '#EF4444',       // Red for negative values/errors
+                    warning: '#F97316',     // Orange for warnings
+                    gray: '#8E9196',        // Neutral gray
+                },
+                
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
 					foreground: 'hsl(var(--primary-foreground))'
@@ -84,11 +99,21 @@ export default {
 					to: {
 						height: '0'
 					}
-				}
+				},
+                'pulse-subtle': {
+                    '0%, 100%': { opacity: '1' },
+                    '50%': { opacity: '0.7' },
+                },
+                'float': {
+                    '0%, 100%': { transform: 'translateY(0)' },
+                    '50%': { transform: 'translateY(-10px)' },
+                }
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+                'pulse-subtle': 'pulse-subtle 2s ease-in-out infinite',
+                'float': 'float 3s ease-in-out infinite',
 			}
 		}
 	},
