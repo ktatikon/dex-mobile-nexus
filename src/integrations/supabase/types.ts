@@ -9,6 +9,103 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      email_whitelist: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: string
+          is_active: boolean | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id?: string
+          is_active?: boolean | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: string
+          is_active?: boolean | null
+        }
+        Relationships: []
+      }
+      kyc: {
+        Row: {
+          address: string | null
+          date_of_birth: string | null
+          government_id_url: string | null
+          id: string
+          status: string | null
+          submitted_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          address?: string | null
+          date_of_birth?: string | null
+          government_id_url?: string | null
+          id?: string
+          status?: string | null
+          submitted_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          address?: string | null
+          date_of_birth?: string | null
+          government_id_url?: string | null
+          id?: string
+          status?: string | null
+          submitted_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kyc_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      transactions: {
+        Row: {
+          amount: number
+          created_at: string | null
+          id: string
+          status: string | null
+          token_type: string
+          transaction_type: string
+          user_id: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          id?: string
+          status?: string | null
+          token_type: string
+          transaction_type: string
+          user_id?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          id?: string
+          status?: string | null
+          token_type?: string
+          transaction_type?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_profile: {
         Row: {
           created_at: string
@@ -21,6 +118,33 @@ export type Database = {
         Update: {
           created_at?: string
           id?: number
+        }
+        Relationships: []
+      }
+      users: {
+        Row: {
+          auth_id: string | null
+          created_at: string | null
+          email: string
+          full_name: string
+          id: string
+          phone: string | null
+        }
+        Insert: {
+          auth_id?: string | null
+          created_at?: string | null
+          email: string
+          full_name: string
+          id?: string
+          phone?: string | null
+        }
+        Update: {
+          auth_id?: string | null
+          created_at?: string | null
+          email?: string
+          full_name?: string
+          id?: string
+          phone?: string | null
         }
         Relationships: []
       }
