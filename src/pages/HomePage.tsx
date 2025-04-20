@@ -27,11 +27,11 @@ const HomePage: React.FC = () => {
   }).slice(0, 4);
   
   const handleGoToSwap = () => {
-    navigate('/swap');
+    navigate('/trade');
   };
   
   const handleGoToWallet = () => {
-    navigate('/wallet');
+    navigate('/profile');
   };
 
   return (
@@ -84,7 +84,7 @@ const HomePage: React.FC = () => {
             <path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/>
             <path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/>
           </svg>
-          <span>Wallet</span>
+          <span>Profile</span>
         </Button>
       </div>
       
@@ -122,7 +122,7 @@ const HomePage: React.FC = () => {
               token={token}
               showBalance={false}
               onSelect={() => {
-                navigate('/swap', { state: { preSelectedToken: token } });
+                navigate('/trade', { state: { preSelectedToken: token } });
               }}
             />
           ))}
