@@ -30,8 +30,8 @@ const AuthPage = () => {
     try {
       if (action === 'login') {
         await signIn(formData.email, formData.password);
-        const from = location.state?.from?.pathname || '/';
-        navigate(from);
+        // Always navigate to home page after successful login
+        navigate('/');
       } else {
         await signUp(formData.email, formData.password, {
           full_name: formData.fullName,
@@ -93,7 +93,7 @@ const AuthPage = () => {
                     className="bg-dex-dark/70 border-dex-primary/30 text-white placeholder-gray-400 focus:ring-dex-accent pr-10"
                     required
                   />
-                  <button 
+                  <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400"
@@ -147,7 +147,7 @@ const AuthPage = () => {
                     className="bg-dex-dark/70 border-dex-primary/30 text-white placeholder-gray-400 focus:ring-dex-accent pr-10"
                     required
                   />
-                  <button 
+                  <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400"

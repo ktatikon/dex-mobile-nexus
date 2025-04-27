@@ -7,7 +7,7 @@ export const mockTokens: Token[] = [
     id: "ethereum",
     symbol: "ETH",
     name: "Ethereum",
-    logo: "https://cryptologos.cc/logos/ethereum-eth-logo.png",
+    logo: "/crypto-icons/eth.svg",
     decimals: 18,
     balance: "1.5263",
     price: 2845.23,
@@ -17,7 +17,7 @@ export const mockTokens: Token[] = [
     id: "bitcoin",
     symbol: "BTC",
     name: "Bitcoin",
-    logo: "https://cryptologos.cc/logos/bitcoin-btc-logo.png",
+    logo: "/crypto-icons/btc.svg",
     decimals: 8,
     balance: "0.0358",
     price: 56231.42,
@@ -27,7 +27,7 @@ export const mockTokens: Token[] = [
     id: "usd-coin",
     symbol: "USDC",
     name: "USD Coin",
-    logo: "https://cryptologos.cc/logos/usd-coin-usdc-logo.png",
+    logo: "/crypto-icons/usdc.svg",
     decimals: 6,
     balance: "523.67",
     price: 1.0,
@@ -37,7 +37,7 @@ export const mockTokens: Token[] = [
     id: "tether",
     symbol: "USDT",
     name: "Tether",
-    logo: "https://cryptologos.cc/logos/tether-usdt-logo.png",
+    logo: "/crypto-icons/usdt.svg",
     decimals: 6,
     balance: "745.21",
     price: 1.0,
@@ -47,7 +47,7 @@ export const mockTokens: Token[] = [
     id: "solana",
     symbol: "SOL",
     name: "Solana",
-    logo: "https://cryptologos.cc/logos/solana-sol-logo.png",
+    logo: "/crypto-icons/sol.svg",
     decimals: 9,
     balance: "12.431",
     price: 102.38,
@@ -57,7 +57,7 @@ export const mockTokens: Token[] = [
     id: "cardano",
     symbol: "ADA",
     name: "Cardano",
-    logo: "https://cryptologos.cc/logos/cardano-ada-logo.png",
+    logo: "/crypto-icons/ada.svg",
     decimals: 6,
     balance: "452.16",
     price: 0.55,
@@ -67,7 +67,7 @@ export const mockTokens: Token[] = [
     id: "binancecoin",
     symbol: "BNB",
     name: "Binance Coin",
-    logo: "https://cryptologos.cc/logos/bnb-bnb-logo.png",
+    logo: "/crypto-icons/bnb.svg",
     decimals: 18,
     balance: "3.482",
     price: 304.12,
@@ -77,7 +77,7 @@ export const mockTokens: Token[] = [
     id: "ripple",
     symbol: "XRP",
     name: "Ripple",
-    logo: "https://cryptologos.cc/logos/xrp-xrp-logo.png",
+    logo: "/crypto-icons/xrp.svg",
     decimals: 6,
     balance: "1250.32",
     price: 0.59,
@@ -189,20 +189,20 @@ export const formatAddress = (address: string): string => {
 export const generateChartData = (days = 7, startPrice = 100): number[][] => {
   const data: number[][] = [];
   let currentPrice = startPrice;
-  
+
   const now = new Date();
-  
+
   for (let i = days; i >= 0; i--) {
     const date = new Date();
     date.setDate(now.getDate() - i);
-    
+
     // Random price change percentage between -5% and +5%
     const changePercent = (Math.random() * 10) - 5;
     currentPrice = currentPrice * (1 + (changePercent / 100));
-    
+
     data.push([date.getTime(), currentPrice]);
   }
-  
+
   return data;
 };
 
@@ -215,16 +215,106 @@ export const calculateSwapEstimate = (
   if (!fromToken || !toToken || !amount || isNaN(parseFloat(amount))) {
     return { toAmount: "0", priceImpact: 0 };
   }
-  
+
   const fromPrice = fromToken.price || 0;
   const toPrice = toToken.price || 1;
-  
+
   // Simple conversion based on price
   const fromValue = parseFloat(amount) * fromPrice;
   const toAmount = (fromValue / toPrice).toFixed(toToken.decimals > 6 ? 6 : toToken.decimals);
-  
+
   // Mock price impact (higher for larger trades)
   const priceImpact = Math.min(parseFloat(amount) * 0.002, 5);
-  
+
   return { toAmount, priceImpact };
+};
+
+// Order book entry type
+export interface OrderBookEntry {
+  price: number;
+  amount: number;
+  total: number;
+}
+
+// Generate mock order book data
+export const generateOrderBook = (basePrice: number, spread = 0.02): { bids: OrderBookEntry[], asks: OrderBookEntry[] } => {
+  const bids: OrderBookEntry[] = [];
+  const asks: OrderBookEntry[] = [];
+
+  // Calculate bid/ask prices with spread
+  const bidPrice = basePrice * (1 - spread / 2);
+  const askPrice = basePrice * (1 + spread / 2);
+
+  // Generate 15 bid entries (buy orders)
+  let bidTotal = 0;
+  for (let i = 0; i < 15; i++) {
+    // Price decreases as we go down the order book for bids
+    const price = bidPrice * (1 - 0.001 * i);
+    // Random amount between 0.1 and 5 for BTC-like assets
+    const amount = 0.1 + Math.random() * 4.9;
+    bidTotal += amount;
+
+    bids.push({
+      price,
+      amount,
+      total: bidTotal
+    });
+  }
+
+  // Generate 15 ask entries (sell orders)
+  let askTotal = 0;
+  for (let i = 0; i < 15; i++) {
+    // Price increases as we go up the order book for asks
+    const price = askPrice * (1 + 0.001 * i);
+    // Random amount between 0.1 and 5
+    const amount = 0.1 + Math.random() * 4.9;
+    askTotal += amount;
+
+    asks.push({
+      price,
+      amount,
+      total: askTotal
+    });
+  }
+
+  return { bids, asks };
+};
+
+// Recent trade type
+export interface RecentTrade {
+  id: string;
+  price: number;
+  amount: number;
+  value: number;
+  time: Date;
+  type: 'buy' | 'sell';
+}
+
+// Generate mock recent trades
+export const generateRecentTrades = (basePrice: number, count = 20): RecentTrade[] => {
+  const trades: RecentTrade[] = [];
+  const now = new Date();
+
+  for (let i = 0; i < count; i++) {
+    // Random price variation around base price (±1%)
+    const priceVariation = basePrice * (0.99 + Math.random() * 0.02);
+    // Random amount between 0.01 and 2
+    const amount = 0.01 + Math.random() * 1.99;
+    // Random time in the last hour
+    const time = new Date(now.getTime() - Math.random() * 60 * 60 * 1000);
+    // Random type (buy or sell)
+    const type = Math.random() > 0.5 ? 'buy' : 'sell';
+
+    trades.push({
+      id: `trade-${i}`,
+      price: priceVariation,
+      amount,
+      value: priceVariation * amount,
+      time,
+      type
+    });
+  }
+
+  // Sort by time (most recent first)
+  return trades.sort((a, b) => b.time.getTime() - a.time.getTime());
 };

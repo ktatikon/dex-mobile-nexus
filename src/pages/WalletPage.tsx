@@ -11,16 +11,16 @@ const WalletPage: React.FC = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { address, tokens } = mockWallet;
-  
+
   // Sort tokens by value (balance * price)
   const sortedTokens = [...tokens].sort((a, b) => {
     const aValue = parseFloat(a.balance || '0') * (a.price || 0);
     const bValue = parseFloat(b.balance || '0') * (b.price || 0);
     return bValue - aValue;
   });
-  
+
   const totalBalance = calculateTotalBalance(tokens);
-  
+
   const handleCopyAddress = () => {
     if (navigator.clipboard) {
       navigator.clipboard.writeText(address)
@@ -39,33 +39,33 @@ const WalletPage: React.FC = () => {
         });
     }
   };
-  
+
   const handleGoToSwap = (token: any) => {
     navigate('/swap', { state: { preSelectedToken: token } });
   };
-  
+
   return (
     <div className="pb-20">
       <Card className="p-4 mb-6 bg-dex-dark text-white border-gray-700">
         <h2 className="text-lg font-semibold mb-1">Wallet</h2>
-        
+
         <div className="flex justify-between items-start mb-4">
           <div>
             <div className="text-2xl font-bold">${formatCurrency(totalBalance)}</div>
-            <button 
+            <button
               className="text-sm text-gray-400 hover:text-white flex items-center gap-1"
               onClick={handleCopyAddress}
             >
               {address}
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                width="14" 
-                height="14" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="2" 
-                strokeLinecap="round" 
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
                 strokeLinejoin="round"
               >
                 <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
@@ -73,22 +73,23 @@ const WalletPage: React.FC = () => {
               </svg>
             </button>
           </div>
-          
+
           <div className="flex gap-2">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               size="sm"
               className="text-dex-primary border-dex-primary hover:bg-dex-primary/10 h-9"
+              onClick={() => navigate('/send')}
             >
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                width="16" 
-                height="16" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="2" 
-                strokeLinecap="round" 
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
                 strokeLinejoin="round"
                 className="mr-1"
               >
@@ -97,21 +98,22 @@ const WalletPage: React.FC = () => {
               </svg>
               Send
             </Button>
-            
-            <Button 
-              variant="outline" 
+
+            <Button
+              variant="outline"
               size="sm"
               className="text-dex-primary border-dex-primary hover:bg-dex-primary/10 h-9"
+              onClick={() => navigate('/receive')}
             >
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                width="16" 
-                height="16" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="2" 
-                strokeLinecap="round" 
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
                 strokeLinejoin="round"
                 className="mr-1"
               >
@@ -123,12 +125,12 @@ const WalletPage: React.FC = () => {
           </div>
         </div>
       </Card>
-      
+
       <div className="mb-4">
         <h2 className="text-xl font-semibold mb-3">Your Assets</h2>
         <Card className="p-0 bg-dex-dark text-white border-gray-700">
           {sortedTokens.map(token => (
-            <TokenListItem 
+            <TokenListItem
               key={token.id}
               token={token}
               onSelect={() => handleGoToSwap(token)}

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, LogOut, User, Layers, Compass } from 'lucide-react';
+import { Home, LogOut, User, BarChart2, Wallet } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -40,21 +40,21 @@ const DexNavigation = () => {
             isActive('/trade') ? 'text-dex-accent' : 'text-white'
           }`}
         >
-          <Layers size={20} />
-          <span className="text-xs">Trade</span>
+          <BarChart2 size={20} />
+          <span className="text-xs">Market</span>
         </Button>
       </Link>
 
-      <Link to="/explore">
+      <Link to="/wallet">
         <Button
           variant="ghost"
           size="sm"
           className={`flex flex-col items-center gap-1 ${
-            isActive('/explore') ? 'text-dex-accent' : 'text-white'
+            isActive('/wallet') ? 'text-dex-accent' : 'text-white'
           }`}
         >
-          <Compass size={20} />
-          <span className="text-xs">Explore</span>
+          <Wallet size={20} />
+          <span className="text-xs">Wallet</span>
         </Button>
       </Link>
 

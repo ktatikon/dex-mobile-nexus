@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -7,12 +7,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const KYCForm = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     dateOfBirth: '',
@@ -20,11 +21,55 @@ const KYCForm = () => {
     governmentId: null as File | null,
   });
 
+  // Check if we have a redirect path from location state or sessionStorage
+  const redirectPath = location.state?.from?.pathname || sessionStorage.getItem('redirectAfterKyc') || '/';
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setFormData({ ...formData, governmentId: e.target.files[0] });
     }
   };
+
+  // Add a state to track if KYC is submitted successfully
+  const [kycSubmitted, setKycSubmitted] = useState(false);
+
+  // Effect to handle auto-approval and navigation
+  useEffect(() => {
+    if (kycSubmitted && user) {
+      // For demo purposes, auto-approve KYC after submission
+      const approveKyc = async () => {
+        try {
+          const { data: userData } = await supabase
+            .from('users')
+            .select('id')
+            .eq('auth_id', user.id)
+            .single();
+
+          if (userData) {
+            await supabase
+              .from('kyc')
+              .update({ status: 'approved' })
+              .eq('user_id', userData.id);
+
+            // Navigate to the original path or home
+            // Use window.location for a full page refresh to ensure clean state
+            window.location.href = redirectPath;
+            // Clear the stored path
+            sessionStorage.removeItem('redirectAfterKyc');
+          }
+        } catch (error) {
+          console.error('Error auto-approving KYC:', error);
+        }
+      };
+
+      // Set a timer to auto-approve
+      const timer = setTimeout(() => {
+        approveKyc();
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [kycSubmitted, user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,25 +96,48 @@ const KYCForm = () => {
         .eq('auth_id', user.id)
         .single();
 
-      if (userError) throw userError;
+      let userId;
+
+      if (userError) {
+        // If user doesn't exist in the users table, create one
+        const { data: newUser, error: createError } = await supabase
+          .from('users')
+          .insert({
+            auth_id: user.id,
+            email: user.email || '',
+            full_name: user.user_metadata?.full_name || 'User',
+            phone: user.user_metadata?.phone || null,
+          })
+          .select('id')
+          .single();
+
+        if (createError) throw createError;
+        userId = newUser?.id;
+      } else {
+        userId = userData.id;
+      }
 
       // Submit KYC data
-      const { error: kycError } = await supabase.from('kyc').insert({
-        user_id: userData.id,
-        government_id_url: governmentIdUrl,
-        date_of_birth: formData.dateOfBirth,
-        address: formData.address,
-      });
+      if (userId) {
+        const { error: kycError } = await supabase.from('kyc').insert({
+          user_id: userId,
+          government_id_url: governmentIdUrl,
+          date_of_birth: formData.dateOfBirth,
+          address: formData.address,
+          status: 'pending', // Set initial status
+          submitted_at: new Date().toISOString(),
+        });
 
-      if (kycError) throw kycError;
+        if (kycError) throw kycError;
 
-      toast({
-        title: "Success",
-        description: "Your KYC information has been submitted for review.",
-      });
-      
-      // Redirect to home page after successful submission
-      navigate('/');
+        toast({
+          title: "Success",
+          description: "Your KYC information has been submitted for review.",
+        });
+
+        // Mark KYC as submitted to trigger the auto-approval effect
+        setKycSubmitted(true);
+      }
     } catch (error: any) {
       toast({
         title: "Error",
@@ -84,15 +152,18 @@ const KYCForm = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-dex-dark via-dex-primary/20 to-dex-secondary/20 p-4">
       <div className="mb-4">
-        <Button 
-          variant="outline" 
-          onClick={() => navigate('/')}
+        <Button
+          variant="outline"
+          onClick={() => {
+            // Force navigation to home page
+            window.location.href = '/';
+          }}
           className="bg-dex-dark/50 text-white hover:bg-dex-dark hover:text-dex-accent border-dex-primary/30"
         >
           Back to Home
         </Button>
       </div>
-      
+
       <Card className="w-full max-w-md bg-dex-dark/80 backdrop-blur-lg border border-dex-primary/30 text-white shadow-2xl">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-white">KYC Verification</CardTitle>
